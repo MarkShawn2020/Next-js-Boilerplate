@@ -1,20 +1,27 @@
-'use client';
-
+import { SignOutButton } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import Link from 'next/link';
-import React, { useState } from 'react';
-import { cn } from '@/utils/Helpers';
+import { getI18nPath } from '@/utils/Helpers';
 import { Button } from '../ui/Button';
 import { Container } from './Container';
+import { HeaderClient } from './HeaderClient';
 
-const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+const Header = async () => {
+  const { userId } = await auth();
+  const locale = await getLocale();
+  const t = await getTranslations('Header');
 
   const navigation = [
-    { name: '文档', href: '/docs' },
-    { name: '示例', href: '/examples' },
-    { name: '博客', href: '/blog' },
-    { name: '关于', href: '/about' },
+    { name: t('docs'), href: '/docs' },
+    { name: t('examples'), href: '/examples' },
+    { name: t('blog'), href: '/blog' },
+    { name: t('about'), href: '/about' },
   ];
+
+  const signInUrl = getI18nPath('/sign-in', locale);
+  const signUpUrl = getI18nPath('/sign-up', locale);
+  const dashboardUrl = getI18nPath('/dashboard', locale);
 
   return (
     <header className="w-full bg-background-main border-b border-border-default/20">
@@ -23,9 +30,9 @@ const Header = () => {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center no-underline">
-              <img 
-                src="/assets/images/neurora-logo-red.svg" 
-                alt="Neurora" 
+              <img
+                src="/assets/images/neurora-logo-red.svg"
+                alt="Neurora"
                 className="h-8 w-auto"
               />
             </Link>
@@ -46,75 +53,55 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Button variant="secondary" size="md">
-              登录
-            </Button>
-            <Button variant="primary" size="md">
-              免费体验
-            </Button>
+            {userId
+              ? (
+                  // Authenticated user actions
+                  <>
+                    <Link href={dashboardUrl}>
+                      <Button variant="secondary" size="md">
+                        {t('dashboard')}
+                      </Button>
+                    </Link>
+                    <SignOutButton>
+                      <Button variant="primary" size="md">
+                        {t('sign_out')}
+                      </Button>
+                    </SignOutButton>
+                  </>
+                )
+              : (
+                  // Unauthenticated user actions
+                  <>
+                    <Link href={signInUrl}>
+                      <Button variant="secondary" size="md">
+                        {t('sign_in')}
+                      </Button>
+                    </Link>
+                    <Link href={signUpUrl}>
+                      <Button variant="primary" size="md">
+                        {t('get_started')}
+                      </Button>
+                    </Link>
+                  </>
+                )}
           </div>
 
           {/* Mobile Menu Button */}
-          <button
-            type="button"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="lg:hidden p-2 rounded-md text-text-main hover:bg-gray-100 transition-colors"
-            aria-label="Toggle menu"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              {isMenuOpen
-                ? (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  )
-                : (
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4 6h16M4 12h16M4 18h16"
-                    />
-                  )}
-            </svg>
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        <div
-          className={cn(
-            'lg:hidden transition-all duration-300 overflow-hidden',
-            isMenuOpen ? 'max-h-96 pb-6' : 'max-h-0',
-          )}
-        >
-          <nav className="flex flex-col space-y-4">
-            {navigation.map(item => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-text-main hover:text-primary transition-colors py-2 no-underline"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
-            ))}
-            <div className="flex flex-col space-y-3 pt-4 border-t border-border-default/20">
-              <Button variant="secondary" size="md" className="w-full">
-                登录
-              </Button>
-              <Button variant="primary" size="md" className="w-full">
-                免费体验
-              </Button>
-            </div>
-          </nav>
+          <HeaderClient
+            navigation={navigation}
+            isAuthenticated={!!userId}
+            urls={{
+              signIn: signInUrl,
+              signUp: signUpUrl,
+              dashboard: dashboardUrl,
+            }}
+            translations={{
+              signIn: t('sign_in'),
+              getStarted: t('get_started'),
+              dashboard: t('dashboard'),
+              signOut: t('sign_out'),
+            }}
+          />
         </div>
       </Container>
     </header>

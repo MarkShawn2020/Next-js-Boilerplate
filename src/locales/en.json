@@ -7,6 +7,16 @@
     "sign_in_link": "Sign in",
     "sign_up_link": "Sign up"
   },
+  "Header": {
+    "docs": "Docs",
+    "examples": "Examples",
+    "blog": "Blog",
+    "about": "About",
+    "sign_in": "Sign in",
+    "get_started": "Get Started",
+    "dashboard": "Dashboard",
+    "sign_out": "Sign out"
+  },
   "BaseTemplate": {
     "description": "Starter code for your Nextjs Boilerplate with Tailwind CSS",
     "made_with": "Made with <author></author>."

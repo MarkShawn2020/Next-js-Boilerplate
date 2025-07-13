@@ -1,5 +1,6 @@
 {
   "name": "next-js-boilerplate",
+  "version": "0.0.1",
   "author": "Ixartz (https://github.com/ixartz)",
   "engines": {
     "node": ">=20"
@@ -123,6 +124,5 @@
       "@semantic-release/release-notes-generator",
       "@semantic-release/github"
     ]
-  },
-  "version": "0.0.1"
+  }
 }

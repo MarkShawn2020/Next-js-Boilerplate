@@ -6,8 +6,8 @@ export const DemoBanner = () => (
       <span>🚀</span>
       <span>Next.js 模板在线演示 - 由 Neurora 团队开发</span>
       <span>-</span>
-      <Link 
-        href="/sign-up" 
+      <Link
+        href="/sign-up"
         className="text-primary hover:opacity-80 transition-opacity underline underline-offset-2 font-semibold"
       >
         体验认证功能

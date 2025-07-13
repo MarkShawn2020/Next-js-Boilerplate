@@ -7,6 +7,16 @@
     "sign_in_link": "Se connecter",
     "sign_up_link": "S'inscrire"
   },
+  "Header": {
+    "docs": "Documentation",
+    "examples": "Exemples",
+    "blog": "Blog",
+    "about": "À propos",
+    "sign_in": "Se connecter",
+    "get_started": "Commencer",
+    "dashboard": "Tableau de bord",
+    "sign_out": "Se déconnecter"
+  },
   "BaseTemplate": {
     "description": "Code de démarrage pour Next.js avec Tailwind CSS",
     "made_with": "Fait avec <author></author>."
