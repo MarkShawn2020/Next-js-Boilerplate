@@ -53,7 +53,8 @@ export default async function RootLayout(props: {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await props.params;
+  const params = await props.params;
+  const { locale } = params;
 
   if (!hasLocale(routing.locales, locale)) {
     notFound();
