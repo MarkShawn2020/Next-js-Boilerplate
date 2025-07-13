@@ -2,7 +2,6 @@ import { SignOutButton } from '@clerk/nextjs';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import Link from 'next/link';
 import { LocaleSwitcher } from '@/components/LocaleSwitcher';
-import { BaseTemplate } from '@/templates/BaseTemplate';
 
 export default async function DashboardLayout(props: {
   children: React.ReactNode;
@@ -16,44 +15,40 @@ export default async function DashboardLayout(props: {
   });
 
   return (
-    <BaseTemplate
-      leftNav={(
-        <>
-          <li>
-            <Link
-              href="/dashboard/"
-              className="border-none text-gray-700 hover:text-gray-900"
-            >
-              {t('dashboard_link')}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/dashboard/user-profile/"
-              className="border-none text-gray-700 hover:text-gray-900"
-            >
-              {t('user_profile_link')}
-            </Link>
-          </li>
-        </>
-      )}
-      rightNav={(
-        <>
-          <li>
-            <SignOutButton>
-              <button className="border-none text-gray-700 hover:text-gray-900" type="button">
-                {t('sign_out')}
-              </button>
-            </SignOutButton>
-          </li>
+    <div className="min-h-screen bg-background-main">
+      <header className="bg-white border-b border-border-default">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16">
+            <nav className="flex space-x-8">
+              <Link
+                href="/dashboard/"
+                className="text-text-main hover:text-primary transition-colors font-medium"
+              >
+                {t('dashboard_link')}
+              </Link>
+              <Link
+                href="/dashboard/user-profile/"
+                className="text-text-faded hover:text-text-main transition-colors"
+              >
+                {t('user_profile_link')}
+              </Link>
+            </nav>
+            
+            <div className="flex items-center space-x-4">
+              <LocaleSwitcher />
+              <SignOutButton>
+                <button className="text-text-faded hover:text-text-main transition-colors" type="button">
+                  {t('sign_out')}
+                </button>
+              </SignOutButton>
+            </div>
+          </div>
+        </div>
+      </header>
 
-          <li>
-            <LocaleSwitcher />
-          </li>
-        </>
-      )}
-    >
-      {props.children}
-    </BaseTemplate>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {props.children}
+      </main>
+    </div>
   );
 }
