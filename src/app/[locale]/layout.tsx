@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { ClerkProvider } from '@clerk/nextjs';
 import { hasLocale, NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { Fira_Code, Inter } from 'next/font/google';
@@ -6,6 +7,7 @@ import { notFound } from 'next/navigation';
 import { PostHogProvider } from '@/components/analytics/PostHogProvider';
 import { DemoBadge } from '@/components/DemoBadge';
 import { routing } from '@/libs/I18nRouting';
+import { ClerkLocalizations } from '@/utils/AppConfig';
 import '@/styles/global.css';
 
 const inter = Inter({
@@ -62,15 +64,40 @@ export default async function RootLayout(props: {
 
   setRequestLocale(locale);
 
+  const clerkLocale = ClerkLocalizations.supportedLocales[locale] ?? ClerkLocalizations.defaultLocale;
+  let signInUrl = '/sign-in';
+  let signUpUrl = '/sign-up';
+  let dashboardUrl = '/dashboard';
+  let afterSignOutUrl = '/';
+
+  if (locale !== routing.defaultLocale) {
+    signInUrl = `/${locale}${signInUrl}`;
+    signUpUrl = `/${locale}${signUpUrl}`;
+    dashboardUrl = `/${locale}${dashboardUrl}`;
+    afterSignOutUrl = `/${locale}${afterSignOutUrl}`;
+  }
+
   return (
     <html lang={locale} className={`${inter.variable} ${firaCode.variable}`}>
       <body className="font-sans antialiased">
-        <NextIntlClientProvider>
-          <PostHogProvider>
-            {props.children}
-          </PostHogProvider>
-          <DemoBadge />
-        </NextIntlClientProvider>
+        <ClerkProvider
+          localization={clerkLocale}
+          signInUrl={signInUrl}
+          signUpUrl={signUpUrl}
+          signInFallbackRedirectUrl={dashboardUrl}
+          signUpFallbackRedirectUrl={dashboardUrl}
+          afterSignOutUrl={afterSignOutUrl}
+          appearance={{
+            cssLayerName: 'clerk',
+          }}
+        >
+          <NextIntlClientProvider>
+            <PostHogProvider>
+              {props.children}
+            </PostHogProvider>
+            <DemoBadge />
+          </NextIntlClientProvider>
+        </ClerkProvider>
       </body>
     </html>
   );
